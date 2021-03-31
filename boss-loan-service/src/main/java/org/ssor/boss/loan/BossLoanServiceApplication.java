@@ -1,0 +1,12 @@
+package org.ssor.boss.loan;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BossLoanServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BossLoanServiceApplication.class, args);
+	}
+}
