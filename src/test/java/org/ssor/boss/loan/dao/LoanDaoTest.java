@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,7 +19,6 @@ public class LoanDaoTest {
 	public LoanDao loanDao;
 
 	public Loan loanA;
-
 	@BeforeEach
 	public void setup() {
 		loanA = new Loan();
@@ -29,7 +29,8 @@ public class LoanDaoTest {
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
 	}
-
+	
+	@Disabled
 	@Test
 	public void test_CanFindAllEmpty() {
 		List<Loan> result = loanDao.findAll();
@@ -37,7 +38,7 @@ public class LoanDaoTest {
 		assertThat(result).isNotNull().isEmpty();
 		;
 	}
-
+	@Disabled
 	@Test
 	public void test_CanFindById() {
 		loanDao.save(loanA);
