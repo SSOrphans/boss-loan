@@ -3,11 +3,17 @@
  */
 package org.ssor.boss.loan.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
-
 import javax.persistence.*;
+
+import org.ssor.boss.loan.dto.LoanDto;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Derrian Harris
@@ -15,13 +21,19 @@ import javax.persistence.*;
  */
 
 @Entity
-
-@NamedNativeQuery(name = "Loan.findByUserIdandId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId AND loan.id = :id",resultClass = Loan.class)
-@NamedNativeQuery(name = "Loan.findByUserId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId",resultClass = Loan.class)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@NamedNativeQuery(name = "Loan.findByUserIdAndId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId AND loan.id = :id", resultClass = Loan.class)
+@NamedNativeQuery(name = "Loan.findByUserId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId", resultClass = Loan.class)
+@NamedNativeQuery(name = "Loan.findByBranchId", query = "SELECT loan.* from loan inner join branch_loans on branch_loans.loan_id = loan.id where branch_loans.branch_id = :branchId", resultClass = Loan.class)
 @Table(name = "loan")
 public class Loan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@Column(name = "amount")
@@ -34,113 +46,18 @@ public class Loan {
 	private LocalDateTime takenAt;
 
 	@Column(name = "due_by")
-	private LocalDate dueBy;
+	private LocalDateTime dueBy;
 
 	@Column(name = "amount_due")
 	private Float amountDue;
 
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return this.id;
+	public LoanDto convertToLoanDto() {
+		LoanDto loanDto = new LoanDto();
+		loanDto.setAmount(amount);
+		loanDto.setInterestRate(interestRate);
+		loanDto.setTakenAt(takenAt);
+		loanDto.setDueBy(dueBy);
+		loanDto.setAmountDue(amountDue);
+		return loanDto;
 	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the amount
-	 */
-	public Float getAmount() {
-		return this.amount;
-	}
-
-	/**
-	 * @param amount the amount to set
-	 */
-	public void setAmount(Float amount) {
-		this.amount = amount;
-	}
-
-	/**
-	 * @return the interestRate
-	 */
-	public Float getInterestRate() {
-		return this.interestRate;
-	}
-
-	/**
-	 * @param interestRate the interestRate to set
-	 */
-	public void setInterestRate(Float interestRate) {
-		this.interestRate = interestRate;
-	}
-
-	/**
-	 * @return the takenAt
-	 */
-	public LocalDateTime getTakenAt() {
-		return this.takenAt;
-	}
-
-	/**
-	 * @param takenAt the takenAt to set
-	 */
-	public void setTakenAt(LocalDateTime takenAt) {
-		this.takenAt = takenAt;
-	}
-
-	/**
-	 * @return the dueBy
-	 */
-	public LocalDate getDueBy() {
-		return this.dueBy;
-	}
-
-	/**
-	 * @param dueBy the dueBy to set
-	 */
-	public void setDueBy(LocalDate dueBy) {
-		this.dueBy = dueBy;
-	}
-
-	/**
-	 * @return the amountDue
-	 */
-	public Float getAmountDue() {
-		return this.amountDue;
-	}
-
-	/**
-	 * @param amountDue the amountDue to set
-	 */
-	public void setAmountDue(Float amountDue) {
-		this.amountDue = amountDue;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Loan other = (Loan) obj;
-		return Objects.equals(this.id, other.id);
-	}
-
 }

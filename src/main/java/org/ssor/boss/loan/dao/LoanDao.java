@@ -12,10 +12,10 @@ import org.ssor.boss.loan.entity.Loan;
 
 /**
  * @author Derrian Harris
- *
  */
 @Repository
 public interface LoanDao extends JpaRepository<Loan, Integer>{
-	public Loan findByUserIdandId(@Param("userId") Integer userId, @Param("id")Integer id);
+	public Loan findByUserIdAndId(@Param("userId") Integer userId, @Param("id")Integer id);
 	public List<Loan> findByUserId(@Param("userId") Integer userId);
+	public List<Loan> findByBranchId(@Param("branchId") Integer branchId);
 }
