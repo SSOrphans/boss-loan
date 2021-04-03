@@ -1,6 +1,9 @@
 package org.ssor.boss.loan.controller;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -82,7 +85,7 @@ public class LoanControllerTest {
 	}
 
 	@Test
-	public void test_CanGetLoanByBranchId() throws Exception {
+	public void test_CanGetLoanByBranchId() throws Exception{
 		when(loanService.findByBranchId(1)).thenReturn(loanListA);
 
 		mvc.perform(get("/branches/1/loans")).andExpect(status().isOk())
@@ -91,17 +94,25 @@ public class LoanControllerTest {
 
 	@Test
 	public void test_CanAddLoanByBranchId() throws Exception {
-		when(loanService.add(loanA)).thenReturn(loanA);
+		when(loanService.add(loanA.convertToLoanDto())).thenReturn(loanA);
 
 		mvc.perform(post("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
+				.content(mapper.writeValueAsString(loanA))).andExpect(status().isCreated());
 	}
 
 	@Test
 	public void test_CanUpdateLoanByBranchId() throws Exception {
-		when(loanService.add(loanA)).thenReturn(loanA);
+		when(loanService.update(loanA.getId(),loanA.convertToLoanDto())).thenReturn(loanA);
 
 		mvc.perform(put("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void test_CanDeleteLoanById() throws Exception {
+		doNothing().when(loanService).deleteById(any(Integer.class));
+
+		mvc.perform(delete("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
 	}
 

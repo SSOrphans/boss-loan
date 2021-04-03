@@ -1,4 +1,4 @@
-package org.ssor.boss.loan.dao;
+package org.ssor.boss.loan.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,12 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.ssor.boss.loan.entity.Loan;
+import org.ssor.boss.loan.repository.LoanRepository;
 
 @DataJpaTest
-public class LoanDaoTest {
+public class LoanRepositoryTest {
 
 	@Autowired
-	public LoanDao loanDao;
+	public LoanRepository loanRepository;
 
 	public Loan loanA;
 	@BeforeEach
@@ -30,19 +31,17 @@ public class LoanDaoTest {
 		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
 	}
 	
-	@Disabled
 	@Test
 	public void test_CanFindAllEmpty() {
-		List<Loan> result = loanDao.findAll();
+		List<Loan> result = loanRepository.findAll();
 
 		assertThat(result).isNotNull().isEmpty();
 		;
 	}
-	@Disabled
 	@Test
 	public void test_CanFindById() {
-		loanDao.save(loanA);
-		Loan result = loanDao.findById(1).get();
+		loanRepository.save(loanA);
+		Loan result = loanRepository.findById(1).get();
 
 		assertThat(result).isNotNull().isEqualTo(loanA);
 	}
