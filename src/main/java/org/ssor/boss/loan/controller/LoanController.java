@@ -27,26 +27,26 @@ public class LoanController {
 	@Autowired
 	private LoanService loanService;
 
-	@GetMapping(path = "users/{userid}/holder/loans/{loan_id}", produces = { "application/json" })
+	@GetMapping(path = "api/users/{userid}/holder/loans/{loan_id}", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserIdAndId(@PathVariable("userid") String userId,@PathVariable("loan_id") String id) {
 		Loan loans = loanService.findByUserIdAndId(Integer.parseInt(userId), Integer.parseInt(id));
 		return new ResponseEntity<Object>(loans,HttpStatus.OK);
 	}
 
-	@GetMapping(path = "users/{userid}/holder/loans", produces = { "application/json" })
+	@GetMapping(path = "api/users/{userid}/holder/loans", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserId(@PathVariable("userid") String userId) {
 		
 		List<Loan> loans = loanService.findByUserId(Integer.parseInt(userId));
 		return new ResponseEntity<Object>(loans,HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "branches/{branch_id}/loans", produces = { "application/json" })
+	@GetMapping(path = "api/branches/{branch_id}/loans", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") String branchId) {
 		List<Loan> loans = loanService.findByBranchId(Integer.parseInt(branchId));
 		return new ResponseEntity<Object>(loans,HttpStatus.OK);
 	}
 	
-	@PostMapping(path = "branches/{branch_id}/loans",produces = { "application/json" }, consumes = { "application/json","application/xml" })
+	@PostMapping(path = "api/branches/{branch_id}/loans",produces = { "application/json" }, consumes = { "application/json","application/xml" })
 	public ResponseEntity<Object> addLoanByBranchId(@PathVariable("branch_id") String branchId, @RequestBody LoanDto loanDto) {
 		Loan loan;
 		try
@@ -60,7 +60,7 @@ public class LoanController {
 		return new ResponseEntity<Object>(loan, HttpStatus.CREATED);
 	}
 	
-	@PutMapping(path = "branches/{branch_id}/loans",produces = { "application/json" }, consumes = { "application/json","application/xml" })
+	@PutMapping(path = "api/branches/{branch_id}/loans",produces = { "application/json" }, consumes = { "application/json","application/xml" })
 	public ResponseEntity<Object> updateLoanByBranchId(@PathVariable("branch_id") String branchId, @RequestBody Loan loan) {
 		Loan newLoan;
 		try
@@ -75,7 +75,7 @@ public class LoanController {
 		
 	}
 	
-	@DeleteMapping(path = "branches/{branch_id}/loans", consumes = { "application/json","application/xml" })
+	@DeleteMapping(path = "api/branches/{branch_id}/loans", consumes = { "application/json","application/xml" })
 	public  ResponseEntity<Object> deleteLoanById(@RequestBody Loan loan) {
 		try
 	    {
