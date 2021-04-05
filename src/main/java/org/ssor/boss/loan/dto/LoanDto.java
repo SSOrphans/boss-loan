@@ -19,7 +19,7 @@ public class LoanDto {
 	private Float amount;
 	private Float interestRate;
 	private LocalDateTime takenAt;
-	private LocalDateTime dueBy;
+	private LocalDate dueBy;
 	private Float amountDue;
 	
 	public Loan convertToLoanEntity() {

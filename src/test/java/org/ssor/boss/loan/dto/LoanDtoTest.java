@@ -3,6 +3,7 @@ package org.ssor.boss.loan.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,13 @@ public class LoanDtoTest {
 		loanDtoA.setAmountDue(1f);
 		loanDtoA.setInterestRate(1f);
 		loanDtoA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanDtoA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanDtoA.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanDtoB.setAmount(1f);
 		loanDtoB.setAmountDue(1f);
 		loanDtoB.setInterestRate(1f);
 		loanDtoB.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanDtoB.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanDtoB.setDueBy(LocalDate.of(2022, 1, 1));
 	    assertThat(loanDtoA).isEqualTo(loanDtoB);
 	  }
 	
@@ -43,7 +44,7 @@ public class LoanDtoTest {
 		loanDtoA.setAmountDue(1f);
 		loanDtoA.setInterestRate(1f);
 		loanDtoA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanDtoA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanDtoA.setDueBy(LocalDate.of(2022, 1, 1));
 		
 		Loan loanB = new Loan();
 		loanB.setId(null);
@@ -51,7 +52,7 @@ public class LoanDtoTest {
 		loanB.setAmountDue(1f);
 		loanB.setInterestRate(1f);
 		loanB.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanB.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanB.setDueBy(LocalDate.of(2022, 1, 1));
 		
 	    assertThat(loanDtoA.convertToLoanEntity()).isEqualTo(loanB);
 	  }

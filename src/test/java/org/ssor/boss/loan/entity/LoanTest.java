@@ -3,6 +3,7 @@ package org.ssor.boss.loan.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class LoanTest {
 	
 	@Test
 	  void test_CanCreateAllArgsLoan(){
-		Loan loan = new Loan(1,1f,1f,LocalDateTime.of(2021, 1, 1, 0, 0),LocalDateTime.of(2022, 1, 1, 0, 0),1f);
+		Loan loan = new Loan(1,1f,1f,LocalDateTime.of(2021, 1, 1, 0, 0),LocalDate.of(2022, 1, 1),1f);
 	    assertThat(loan).isNotNull();
 	  }
 	
@@ -32,14 +33,14 @@ public class LoanTest {
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanB.setId(1);
 		loanB.setAmount(1f);
 		loanB.setAmountDue(1f);
 		loanB.setInterestRate(1f);
 		loanB.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanB.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanB.setDueBy(LocalDate.of(2022, 1, 1));
 	    assertThat(loanA).isEqualTo(loanB);
 	  }
 	
@@ -51,14 +52,14 @@ public class LoanTest {
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 		
 		LoanDto loanB = new LoanDto();
 		loanB.setAmount(1f);
 		loanB.setAmountDue(1f);
 		loanB.setInterestRate(1f);
 		loanB.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanB.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanB.setDueBy(LocalDate.of(2022, 1, 1));
 		
 	    assertThat(loanA.convertToLoanDto()).isEqualTo(loanB);
 	  }

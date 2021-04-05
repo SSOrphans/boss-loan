@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class LoanServiceTest {
 		loanE.setAmountDue(1f);
 		loanE.setInterestRate(1f);
 		loanE.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanE.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanE.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanA = new Loan();
 		loanA.setId(null);
@@ -56,7 +57,7 @@ public class LoanServiceTest {
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanListA = new ArrayList<Loan>();
 		loanListE = new ArrayList<Loan>();

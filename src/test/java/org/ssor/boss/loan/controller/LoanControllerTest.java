@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class LoanControllerTest {
 		loanE.setAmountDue(1f);
 		loanE.setInterestRate(1f);
 		loanE.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanE.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanE.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanA = new Loan();
 		loanA.setId(1);
@@ -60,7 +61,7 @@ public class LoanControllerTest {
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 
 		loanListA = new ArrayList<Loan>();
 		loanListE = new ArrayList<Loan>();
@@ -72,7 +73,7 @@ public class LoanControllerTest {
 	public void test_CanGetLoanByUserIdandId() throws Exception {
 		when(loanService.findByUserIdAndId(1, 1)).thenReturn(loanA);
 
-		mvc.perform(get("/users/1/holder/loans/1")).andExpect(status().isOk())
+		mvc.perform(get("/api/users/1/holder/loans/1")).andExpect(status().isOk())
 				.andExpect(content().json(mapper.writeValueAsString(loanE)));
 	}
 
@@ -80,7 +81,7 @@ public class LoanControllerTest {
 	public void test_CanGetLoanByUserId() throws Exception {
 		when(loanService.findByUserId(1)).thenReturn(loanListA);
 
-		mvc.perform(get("/users/1/holder/loans")).andExpect(status().isOk())
+		mvc.perform(get("/api/users/1/holder/loans")).andExpect(status().isOk())
 				.andExpect(content().json(mapper.writeValueAsString(loanListE)));
 	}
 
@@ -88,7 +89,7 @@ public class LoanControllerTest {
 	public void test_CanGetLoanByBranchId() throws Exception{
 		when(loanService.findByBranchId(1)).thenReturn(loanListA);
 
-		mvc.perform(get("/branches/1/loans")).andExpect(status().isOk())
+		mvc.perform(get("/api/branches/1/loans")).andExpect(status().isOk())
 				.andExpect(content().json(mapper.writeValueAsString(loanListE)));
 	}
 
@@ -96,7 +97,7 @@ public class LoanControllerTest {
 	public void test_CanAddLoanByBranchId() throws Exception {
 		when(loanService.add(loanA.convertToLoanDto())).thenReturn(loanA);
 
-		mvc.perform(post("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(loanA))).andExpect(status().isCreated());
 	}
 
@@ -104,7 +105,7 @@ public class LoanControllerTest {
 	public void test_CanUpdateLoanByBranchId() throws Exception {
 		when(loanService.update(loanA.getId(),loanA.convertToLoanDto())).thenReturn(loanA);
 
-		mvc.perform(put("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(put("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
 	}
 	
@@ -112,7 +113,7 @@ public class LoanControllerTest {
 	public void test_CanDeleteLoanById() throws Exception {
 		doNothing().when(loanService).deleteById(any(Integer.class));
 
-		mvc.perform(delete("/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(delete("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
 	}
 

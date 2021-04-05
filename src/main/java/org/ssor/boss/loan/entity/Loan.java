@@ -3,6 +3,7 @@
  */
 package org.ssor.boss.loan.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
@@ -46,7 +47,7 @@ public class Loan {
 	private LocalDateTime takenAt;
 
 	@Column(name = "due_by")
-	private LocalDateTime dueBy;
+	private LocalDate dueBy;
 
 	@Column(name = "amount_due")
 	private Float amountDue;

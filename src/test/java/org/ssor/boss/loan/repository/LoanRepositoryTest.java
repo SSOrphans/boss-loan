@@ -2,6 +2,7 @@ package org.ssor.boss.loan.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class LoanRepositoryTest {
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
-		loanA.setDueBy(LocalDateTime.of(2022, 1, 1, 0, 0));
+		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 	}
 	
 	@Test
