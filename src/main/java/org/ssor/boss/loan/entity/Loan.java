@@ -34,7 +34,7 @@ import lombok.ToString;
 @Table(name = "loan")
 public class Loan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(name = "amount")

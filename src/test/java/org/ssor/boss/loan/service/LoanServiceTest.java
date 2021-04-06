@@ -22,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.ssor.boss.loan.entity.Loan;
 import org.ssor.boss.loan.repository.LoanRepository;
 
+import javassist.NotFoundException;
+
 /**
  * @author Derrian Harris
  *
@@ -66,7 +68,7 @@ public class LoanServiceTest {
 	}
 
 	@Test
-	public void test_CanFindById() {
+	public void test_CanFindById() throws IllegalArgumentException, NotFoundException {
 		when(loanRepository.findById(1)).thenReturn(Optional.of(loanA));
 		Loan result = loanService.findById(1);
 		assertThat(result).isNotNull().isEqualTo(loanE);
@@ -108,7 +110,7 @@ public class LoanServiceTest {
 	}
 	
 	@Test
-	public void test_CanDeleteLoanById() {
+	public void test_CanDeleteLoanById() throws IllegalArgumentException, NotFoundException {
 		doNothing().when(loanRepository).deleteById(any(Integer.class));
 		loanService.deleteById(1);
 		verify(loanRepository, atLeast(1)).deleteById(any(Integer.class));

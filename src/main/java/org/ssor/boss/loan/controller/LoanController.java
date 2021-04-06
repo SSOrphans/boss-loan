@@ -19,6 +19,8 @@ import org.ssor.boss.loan.dto.LoanDto;
 import org.ssor.boss.loan.entity.Loan;
 import org.ssor.boss.loan.service.LoanService;
 
+import javassist.NotFoundException;
+
 /**
  * @author Derrian Harris
  */
@@ -69,8 +71,10 @@ public class LoanController {
 	    }
 	    catch (IllegalArgumentException e)
 	    {
-	      return new ResponseEntity<Object>(null, HttpStatus.BAD_REQUEST);
-	    }
+	      return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+	    } catch (NotFoundException e) {
+	    	return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<Object>(newLoan, HttpStatus.OK);
 		
 	}
@@ -81,12 +85,13 @@ public class LoanController {
 	    {
 			loanService.deleteById(loan.getId());
 	    }
-	    catch (IllegalArgumentException e)
+		catch (IllegalArgumentException e)
 	    {
-	    	return new ResponseEntity<Object>( HttpStatus.BAD_REQUEST);
-	    }
+	      return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+	    } catch (NotFoundException e) {
+	    	return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<Object>(HttpStatus.OK);
-		
 	}
 	
 	
