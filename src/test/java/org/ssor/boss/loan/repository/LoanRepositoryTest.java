@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.ssor.boss.loan.entity.Loan;
+import org.ssor.boss.loan.entity.LoanType;
 import org.ssor.boss.loan.repository.LoanRepository;
 
 @DataJpaTest
@@ -19,17 +20,25 @@ public class LoanRepositoryTest {
 
 	@Autowired
 	public LoanRepository loanRepository;
+	@Autowired
+	public LoanTypeRepository loanTypeRepository;
 
 	public Loan loanA;
+	public LoanType loanType;
 	@BeforeEach
 	public void setup() {
 		loanA = new Loan();
+		loanType = new LoanType(1,"Student Loan");
 		loanA.setId(1);
+		loanA.setUserId(1);
+		loanA.setBranchId(1);
 		loanA.setAmount(1f);
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanA.setDueBy(LocalDate.of(2022, 1, 1));
+		loanA.setLoanType(loanType);
+
 	}
 	
 	@Test
@@ -41,6 +50,7 @@ public class LoanRepositoryTest {
 	}
 	@Test
 	public void test_CanFindById() {
+		loanTypeRepository.save(loanType);
 		loanRepository.save(loanA);
 		Loan result = loanRepository.findById(1).get();
 

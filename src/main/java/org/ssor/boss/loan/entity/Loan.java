@@ -28,15 +28,23 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedNativeQuery(name = "Loan.findByUserIdAndId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId AND loan.id = :id", resultClass = Loan.class)
-@NamedNativeQuery(name = "Loan.findByUserId", query = "SELECT loan.* FROM (((loan INNER JOIN loan_confirmation ON loan.id = loan_confirmation.loan_id) INNER JOIN confirmation ON loan_confirmation.confirmation_id = confirmation.id) INNER JOIN user_confirmation ON confirmation.id = user_confirmation.confirmation_id) WHERE user_confirmation.user_id = :userId", resultClass = Loan.class)
-@NamedNativeQuery(name = "Loan.findByBranchId", query = "SELECT loan.* from loan inner join branch_loans on branch_loans.loan_id = loan.id where branch_loans.branch_id = :branchId", resultClass = Loan.class)
+
+//TODO: Loans need a link to user accounts. Based on the current data scheme this is not possible 
+@NamedQuery(name = "Loan.findByUserIdAndId", query = "SELECT l FROM Loan l WHERE l.userId = :userId AND l.id = :id")
+@NamedQuery(name = "Loan.findByUserId", query = "SELECT l FROM Loan l WHERE l.userId = :userId")
+@NamedQuery(name = "Loan.findByBranchId", query = "SELECT l FROM Loan l WHERE l.branchId = :branchId")
 @Table(name = "loan")
 public class Loan {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
+	@Column(name ="branch_id")
+	private Integer branchId;
+	
+	@Column(name ="user_id")
+	private Integer userId;
+	
 	@Column(name = "amount")
 	private Float amount;
 
@@ -51,10 +59,18 @@ public class Loan {
 
 	@Column(name = "amount_due")
 	private Float amountDue;
+	
+	@ManyToOne
+	@JoinColumn(name="type_id", nullable=false)
+	private LoanType loanType;
 
 	public LoanDto convertToLoanDto() {
 		LoanDto loanDto = new LoanDto();
+		loanDto.setId(id);
 		loanDto.setAmount(amount);
+		loanDto.setLoanType(loanType.getId());
+		loanDto.setUserId(userId);
+		loanDto.setBranchId(branchId);
 		loanDto.setInterestRate(interestRate);
 		loanDto.setTakenAt(takenAt);
 		loanDto.setDueBy(dueBy);

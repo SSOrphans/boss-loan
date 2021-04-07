@@ -3,6 +3,7 @@
  */
 package org.ssor.boss.loan.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +32,41 @@ public class LoanController {
 
 	@GetMapping(path = "api/users/{userid}/holder/loans/{loan_id}", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserIdAndId(@PathVariable("userid") String userId,@PathVariable("loan_id") String id) {
-		Loan loans = loanService.findByUserIdAndId(Integer.parseInt(userId), Integer.parseInt(id));
-		return new ResponseEntity<Object>(loans,HttpStatus.OK);
+		Loan loan = new Loan();
+		try {
+			loan = loanService.findByUserIdAndId(Integer.parseInt(userId), Integer.parseInt(id));
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+		}catch (NotFoundException e) {
+			return new ResponseEntity<Object>(loan, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Object>(loan,HttpStatus.OK);
 	}
 
 	@GetMapping(path = "api/users/{userid}/holder/loans", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserId(@PathVariable("userid") String userId) {
 		
-		List<Loan> loans = loanService.findByUserId(Integer.parseInt(userId));
+		List<Loan> loans = new ArrayList<Loan>();
+		try {
+			loans = loanService.findByUserId(Integer.parseInt(userId));
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+		}catch (NotFoundException e) {
+			return new ResponseEntity<Object>(loans, HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<Object>(loans,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "api/branches/{branch_id}/loans", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") String branchId) {
-		List<Loan> loans = loanService.findByBranchId(Integer.parseInt(branchId));
+		List<Loan> loans = new ArrayList<Loan>();
+		try {
+			loans = loanService.findByBranchId(Integer.parseInt(branchId));
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+		}catch (NotFoundException e) {
+			return new ResponseEntity<Object>(loans, HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<Object>(loans,HttpStatus.OK);
 	}
 	
@@ -55,19 +77,19 @@ public class LoanController {
 	    {
 			loan = loanService.add(loanDto);
 	    }
-	    catch (IllegalArgumentException e)
+	    catch (IllegalArgumentException | NotFoundException e)
 	    {
-	      return new ResponseEntity<Object>(null, HttpStatus.BAD_REQUEST);
+	      return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 	    }
 		return new ResponseEntity<Object>(loan, HttpStatus.CREATED);
 	}
 	
 	@PutMapping(path = "api/branches/{branch_id}/loans",produces = { "application/json" }, consumes = { "application/json","application/xml" })
-	public ResponseEntity<Object> updateLoanByBranchId(@PathVariable("branch_id") String branchId, @RequestBody Loan loan) {
+	public ResponseEntity<Object> updateLoanByBranchId(@PathVariable("branch_id") String branchId, @RequestBody LoanDto loanDto) {
 		Loan newLoan;
 		try
 	    {
-			newLoan = loanService.update(loan.getId(),loan.convertToLoanDto());
+			newLoan = loanService.update(loanDto);
 	    }
 	    catch (IllegalArgumentException e)
 	    {
