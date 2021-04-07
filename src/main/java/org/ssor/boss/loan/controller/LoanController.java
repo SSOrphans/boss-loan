@@ -30,7 +30,7 @@ public class LoanController {
 	@Autowired
 	private LoanService loanService;
 
-	@GetMapping(path = "api/users/{userid}/holder/loans/{loan_id}", produces = { "application/json" })
+	@GetMapping(path = "api/users/{user_id}/holder/loans/{loan_id}", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserIdAndId(@PathVariable("userid") String userId,@PathVariable("loan_id") String id) {
 		Loan loan = new Loan();
 		try {
@@ -43,7 +43,7 @@ public class LoanController {
 		return new ResponseEntity<Object>(loan,HttpStatus.OK);
 	}
 
-	@GetMapping(path = "api/users/{userid}/holder/loans", produces = { "application/json" })
+	@GetMapping(path = "api/users/{user_id}/holder/loans", produces = { "application/json" })
 	public ResponseEntity<Object> getLoanByUserId(@PathVariable("userid") String userId) {
 		
 		List<Loan> loans = new ArrayList<Loan>();
