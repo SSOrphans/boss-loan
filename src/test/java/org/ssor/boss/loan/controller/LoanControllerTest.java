@@ -50,7 +50,7 @@ public class LoanControllerTest {
 		LoanType loanType = new LoanType();
 		loanType.setId(1);
 		loanType.setName("Student Loan");
-		
+
 		loanE = new Loan();
 		loanE.setId(1);
 		loanE.setUserId(1);
@@ -96,7 +96,7 @@ public class LoanControllerTest {
 	}
 
 	@Test
-	public void test_CanGetLoanByBranchId() throws Exception{
+	public void test_CanGetLoanByBranchId() throws Exception {
 		when(loanService.findByBranchId(1)).thenReturn(loanListA);
 
 		mvc.perform(get("/api/branches/1/loans")).andExpect(status().isOk())
@@ -108,7 +108,8 @@ public class LoanControllerTest {
 		when(loanService.add(loanA.convertToLoanDto())).thenReturn(loanA);
 
 		mvc.perform(post("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isCreated()).andExpect(content().json(mapper.writeValueAsString(loanE)));
+				.content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isCreated())
+				.andExpect(content().json(mapper.writeValueAsString(loanE)));
 	}
 
 	@Test
@@ -116,9 +117,10 @@ public class LoanControllerTest {
 		when(loanService.update(loanA.convertToLoanDto())).thenReturn(loanA);
 
 		mvc.perform(put("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(loanE)));
+				.content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isOk())
+				.andExpect(content().json(mapper.writeValueAsString(loanE)));
 	}
-	
+
 	@Test
 	public void test_CanDeleteLoanById() throws Exception {
 		doNothing().when(loanService).deleteById(any(Integer.class));

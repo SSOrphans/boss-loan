@@ -144,5 +144,4 @@ public class LoanService {
 		}
 		loanDao.deleteById(id);
 	}
-
 }
