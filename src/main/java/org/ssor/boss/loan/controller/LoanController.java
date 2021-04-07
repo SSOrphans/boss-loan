@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.ssor.boss.loan.dto.LoanDto;
 import org.ssor.boss.loan.entity.Loan;
+import org.ssor.boss.loan.entity.LoanType;
 import org.ssor.boss.loan.service.LoanService;
 
 import javassist.NotFoundException;
@@ -31,7 +32,7 @@ public class LoanController {
 	private LoanService loanService;
 
 	@GetMapping(path = "api/users/{user_id}/holder/loans/{loan_id}", produces = { "application/json" })
-	public ResponseEntity<Object> getLoanByUserIdAndId(@PathVariable("userid") String userId,@PathVariable("loan_id") String id) {
+	public ResponseEntity<Object> getLoanByUserIdAndId(@PathVariable("user_id") String userId,@PathVariable("loan_id") String id) {
 		Loan loan = new Loan();
 		try {
 			loan = loanService.findByUserIdAndId(Integer.parseInt(userId), Integer.parseInt(id));
@@ -44,7 +45,7 @@ public class LoanController {
 	}
 
 	@GetMapping(path = "api/users/{user_id}/holder/loans", produces = { "application/json" })
-	public ResponseEntity<Object> getLoanByUserId(@PathVariable("userid") String userId) {
+	public ResponseEntity<Object> getLoanByUserId(@PathVariable("user_id") String userId) {
 		
 		List<Loan> loans = new ArrayList<Loan>();
 		try {
@@ -116,5 +117,14 @@ public class LoanController {
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 	
-	
+	@GetMapping(path = "api/branches/{branch_id}/loans/types",produces = { "application/json" })
+	public ResponseEntity<Object> getAllLoanTypes() {
+		List<LoanType> loanTypes = new ArrayList<LoanType>();
+		try {
+			loanTypes = loanService.findAllLoanTypes();
+		}catch (NotFoundException e) {
+			return new ResponseEntity<Object>(loanTypes, HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Object>(loanTypes,HttpStatus.OK);
+	}
 }

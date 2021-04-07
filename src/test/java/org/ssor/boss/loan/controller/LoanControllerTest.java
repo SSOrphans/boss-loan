@@ -44,13 +44,19 @@ public class LoanControllerTest {
 	private List<Loan> loanListE;
 	private Loan loanA;
 	private List<Loan> loanListA;
+	List<LoanType> loanTypesA;
+	List<LoanType> loanTypesE;
 
 	@BeforeEach
 	public void setup() {
-		LoanType loanType = new LoanType();
-		loanType.setId(1);
-		loanType.setName("Student Loan");
-
+		loanTypesA = new ArrayList<LoanType>();
+		loanTypesA.add(new LoanType(1,"Student Loan"));
+		loanTypesA.add(new LoanType(2,"Personal Loan"));
+		
+		loanTypesE = new ArrayList<LoanType>();
+		loanTypesE.add(new LoanType(1,"Student Loan"));
+		loanTypesE.add(new LoanType(2,"Personal Loan"));
+		
 		loanE = new Loan();
 		loanE.setId(1);
 		loanE.setUserId(1);
@@ -60,7 +66,7 @@ public class LoanControllerTest {
 		loanE.setInterestRate(1f);
 		loanE.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanE.setDueBy(LocalDate.of(2022, 1, 1));
-		loanE.setLoanType(loanType);
+		loanE.setLoanType(loanTypesA.get(1));
 
 		loanA = new Loan();
 		loanA.setId(1);
@@ -71,7 +77,7 @@ public class LoanControllerTest {
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanA.setDueBy(LocalDate.of(2022, 1, 1));
-		loanA.setLoanType(loanType);
+		loanA.setLoanType(loanTypesA.get(1));
 
 		loanListA = new ArrayList<Loan>();
 		loanListE = new ArrayList<Loan>();
@@ -127,6 +133,14 @@ public class LoanControllerTest {
 
 		mvc.perform(delete("/api/branches/1/loans").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void test_CanGetAllLoanTypes() throws Exception {
+		when(loanService.findAllLoanTypes()).thenReturn(loanTypesA);
+
+		mvc.perform(get("/api/branches/1/loans/types")).andExpect(status().isOk())
+				.andExpect(content().json(mapper.writeValueAsString(loanTypesE)));
 	}
 
 }
