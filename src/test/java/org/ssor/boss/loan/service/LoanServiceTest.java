@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.ssor.boss.loan.entity.Loan;
 import org.ssor.boss.loan.entity.LoanType;
 import org.ssor.boss.loan.repository.LoanRepository;
+import org.ssor.boss.loan.repository.LoanTypeRepository;
 
 import javassist.NotFoundException;
 
@@ -38,15 +39,28 @@ public class LoanServiceTest {
 
 	@Mock
 	LoanRepository loanRepository;
+	
+	@Mock
+	LoanTypeRepository loanTypeRepository;
 
 	private Loan loanE;
 	private List<Loan> loanListE;
 	private Loan loanA;
 	private List<Loan> loanListA;
 
+	List<LoanType> loanTypesA;
+	List<LoanType> loanTypesE;
+
 	@BeforeEach
 	public void setup() {
-		LoanType loanType = new LoanType(1,"Student Loan");
+		loanTypesA = new ArrayList<LoanType>();
+		loanTypesA.add(new LoanType(1,"Student Loan"));
+		loanTypesA.add(new LoanType(2,"Personal Loan"));
+		
+		loanTypesE = new ArrayList<LoanType>();
+		loanTypesE.add(new LoanType(1,"Student Loan"));
+		loanTypesE.add(new LoanType(2,"Personal Loan"));
+
 		loanA = new Loan();
 		loanE = new Loan();
 		
@@ -58,7 +72,7 @@ public class LoanServiceTest {
 		loanA.setInterestRate(1f);
 		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanA.setDueBy(LocalDate.of(2022, 1, 1));
-		loanA.setLoanType(loanType);
+		loanA.setLoanType(loanTypesA.get(1));
 
 		
 		loanE.setId(1);
@@ -69,7 +83,7 @@ public class LoanServiceTest {
 		loanE.setInterestRate(1f);
 		loanE.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
 		loanE.setDueBy(LocalDate.of(2022, 1, 1));
-		loanE.setLoanType(loanType);
+		loanE.setLoanType(loanTypesA.get(1));
 
 		loanListA = new ArrayList<Loan>();
 		loanListE = new ArrayList<Loan>();
@@ -90,14 +104,6 @@ public class LoanServiceTest {
 		List<Loan> result = loanService.findByBranchId(1);
 		assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
 	}
-
-	@Test
-	public void test_CanFindByUserIdAndId() throws IllegalArgumentException, NotFoundException {
-		when(loanRepository.findByUserIdAndId(1, 1)).thenReturn(loanA);
-		Loan result = loanService.findByUserIdAndId(1, 1);
-		assertThat(result).isNotNull().isEqualTo(loanE);
-	}
-
 	@Test
 	public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
 		when(loanRepository.findByUserId(1)).thenReturn(loanListA);
@@ -127,5 +133,11 @@ public class LoanServiceTest {
 		loanService.deleteById(1);
 		verify(loanRepository, atLeast(1)).deleteById(any(Integer.class));
 	}
-
+	
+	@Test
+	public void test_CanFindAllLoanTypes() throws NotFoundException {
+		when(loanTypeRepository.findAll()).thenReturn(loanTypesA);
+		List<LoanType> result = loanService.findAllLoanTypes();
+		assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanTypesE);
+	}
 }
