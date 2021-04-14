@@ -1,5 +1,6 @@
 package org.ssor.boss.loan.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +29,13 @@ public class LoanService {
 	public Loan add(LoanDto loanDto) throws IllegalArgumentException, NotFoundException {
 
 		Loan loan = loanDto.convertToLoanEntity();
+		
 		Optional<LoanType> loanTypeOpt = loanTypeDao.findById(loanDto.getLoanType());
 		if (loanTypeOpt.isEmpty())
 			throw new NotFoundException("Resource not found with id: " + loanDto.getLoanType());
 
 		loan.setLoanType(loanTypeOpt.get());
+		loan.setTakenAt(LocalDateTime.now());
 
 		return loanDao.save(loan);
 	}
@@ -99,17 +102,6 @@ public class LoanService {
 			throw new NotFoundException("Resource not found with branch id: " + branchId);
 		}
 		return loans;
-	}
-
-	public Loan findByUserIdAndId(Integer userId, Integer id) throws IllegalArgumentException, NotFoundException {
-		if (userId == null || id == null) {
-			throw new IllegalArgumentException("Invalid Request");
-		}
-		Loan loan = loanDao.findByUserIdAndId(userId, id);
-		if (loan == null) {
-			throw new NotFoundException("Resource not found with id: " + id);
-		}
-		return loan;
 	}
 
 	public List<Loan> findByUserId(Integer userId) throws IllegalArgumentException, NotFoundException {

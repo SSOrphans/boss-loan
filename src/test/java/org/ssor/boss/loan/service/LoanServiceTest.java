@@ -104,14 +104,6 @@ public class LoanServiceTest {
 		List<Loan> result = loanService.findByBranchId(1);
 		assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
 	}
-
-	@Test
-	public void test_CanFindByUserIdAndId() throws IllegalArgumentException, NotFoundException {
-		when(loanRepository.findByUserIdAndId(1, 1)).thenReturn(loanA);
-		Loan result = loanService.findByUserIdAndId(1, 1);
-		assertThat(result).isNotNull().isEqualTo(loanE);
-	}
-
 	@Test
 	public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
 		when(loanRepository.findByUserId(1)).thenReturn(loanListA);
