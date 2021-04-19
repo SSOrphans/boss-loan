@@ -6,6 +6,8 @@ package org.ssor.boss.loan.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +37,7 @@ public class LoanController {
 
 	@GetMapping(path = "api/loans/{loan_id}", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<Object> getLoanById(@PathVariable("loan_id") String id) {
+	public ResponseEntity<Object> getLoanById(@PathVariable("loan_id") @Valid String id) {
 		Loan loan = new Loan();
 		try {
 			loan = loanService.findById(Integer.parseInt(id));
@@ -49,7 +51,7 @@ public class LoanController {
 
 	@GetMapping(path = "api/users/{user_id}/loans", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") String userId) {
+	public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") @Valid String userId) {
 
 		List<Loan> loans = new ArrayList<Loan>();
 		try {
@@ -64,7 +66,7 @@ public class LoanController {
 
 	@GetMapping(path = "api/branches/{branch_id}/loans", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") String branchId) {
+	public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") @Valid String branchId) {
 		List<Loan> loans = new ArrayList<Loan>();
 		try {
 			loans = loanService.findByBranchId(Integer.parseInt(branchId));
@@ -79,7 +81,7 @@ public class LoanController {
 	@PostMapping(path = "api/loans", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
 			MediaType.TEXT_PLAIN_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
 					MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Object> addLoanByBranchId(@RequestBody LoanDto loanDto) {
+	public ResponseEntity<Object> addLoanByBranchId(@RequestBody @Valid LoanDto loanDto) {
 		Loan loan;
 		try {
 			loan = loanService.add(loanDto);
@@ -92,7 +94,7 @@ public class LoanController {
 	@PutMapping(path = "api/loans/{loan_id}", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE }, consumes = {
 					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Object> updateLoanByBranchId(@PathVariable("loan_id") String loanId,
+	public ResponseEntity<Object> updateLoanByBranchId(@PathVariable("loan_id") @Valid String loanId,
 			@RequestBody LoanDto loanDto) {
 		Loan newLoan;
 		try {
@@ -108,7 +110,7 @@ public class LoanController {
 	}
 
 	@DeleteMapping(path = "api/loans/{loan_id}", produces = { MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<Object> deleteLoanById(@PathVariable("loan_id") String loanId) {
+	public ResponseEntity<Object> deleteLoanById(@PathVariable("loan_id") @Valid String loanId) {
 		try {
 			loanService.deleteById(Integer.parseInt(loanId));
 		} catch (IllegalArgumentException e) {

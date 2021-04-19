@@ -34,7 +34,6 @@ public class LoanType {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	
 	@Column(name ="name")
 	private String Name;
 }

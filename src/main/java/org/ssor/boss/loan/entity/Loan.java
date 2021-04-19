@@ -28,8 +28,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-
-//TODO: Loans need a link to user accounts. Based on the current data scheme this is not possible 
 @NamedQuery(name = "Loan.findByUserIdAndId", query = "SELECT l FROM Loan l WHERE l.userId = :userId AND l.id = :id")
 @NamedQuery(name = "Loan.findByUserId", query = "SELECT l FROM Loan l WHERE l.userId = :userId")
 @NamedQuery(name = "Loan.findByBranchId", query = "SELECT l FROM Loan l WHERE l.branchId = :branchId")

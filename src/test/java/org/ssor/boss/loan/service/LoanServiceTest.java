@@ -19,7 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoRule;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.quality.Strictness;
 import org.ssor.boss.loan.entity.Loan;
 import org.ssor.boss.loan.entity.LoanType;
 import org.ssor.boss.loan.repository.LoanRepository;
@@ -39,7 +42,7 @@ public class LoanServiceTest {
 
 	@Mock
 	LoanRepository loanRepository;
-	
+
 	@Mock
 	LoanTypeRepository loanTypeRepository;
 
@@ -50,38 +53,39 @@ public class LoanServiceTest {
 
 	List<LoanType> loanTypesA;
 	List<LoanType> loanTypesE;
+	LocalDateTime currTime;
 
 	@BeforeEach
 	public void setup() {
+		currTime = LocalDateTime.now();
 		loanTypesA = new ArrayList<LoanType>();
-		loanTypesA.add(new LoanType(1,"Student Loan"));
-		loanTypesA.add(new LoanType(2,"Personal Loan"));
-		
+		loanTypesA.add(new LoanType(1, "Student Loan"));
+		loanTypesA.add(new LoanType(2, "Personal Loan"));
+
 		loanTypesE = new ArrayList<LoanType>();
-		loanTypesE.add(new LoanType(1,"Student Loan"));
-		loanTypesE.add(new LoanType(2,"Personal Loan"));
+		loanTypesE.add(new LoanType(1, "Student Loan"));
+		loanTypesE.add(new LoanType(2, "Personal Loan"));
 
 		loanA = new Loan();
 		loanE = new Loan();
-		
+
 		loanA.setId(1);
 		loanA.setUserId(1);
 		loanA.setBranchId(1);
 		loanA.setAmount(1f);
 		loanA.setAmountDue(1f);
 		loanA.setInterestRate(1f);
-		loanA.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
+		loanA.setTakenAt(currTime);
 		loanA.setDueBy(LocalDate.of(2022, 1, 1));
 		loanA.setLoanType(loanTypesA.get(1));
 
-		
 		loanE.setId(1);
 		loanE.setUserId(1);
 		loanE.setBranchId(1);
 		loanE.setAmount(1f);
 		loanE.setAmountDue(1f);
 		loanE.setInterestRate(1f);
-		loanE.setTakenAt(LocalDateTime.of(2021, 1, 1, 0, 0));
+		loanE.setTakenAt(currTime);
 		loanE.setDueBy(LocalDate.of(2022, 1, 1));
 		loanE.setLoanType(loanTypesA.get(1));
 
@@ -104,6 +108,7 @@ public class LoanServiceTest {
 		List<Loan> result = loanService.findByBranchId(1);
 		assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
 	}
+
 	@Test
 	public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
 		when(loanRepository.findByUserId(1)).thenReturn(loanListA);
@@ -117,23 +122,24 @@ public class LoanServiceTest {
 		List<Loan> result = loanService.findAllLoans();
 		assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
 	}
-	
+
 	@Disabled
 	@Test
 	public void test_CanAddLoan() throws IllegalArgumentException, NotFoundException {
+		when(loanTypeRepository.findById(any(Integer.class))).thenReturn(Optional.of(loanTypesA.get(1)));
 		when(loanRepository.save(loanA)).thenReturn(loanA);
 		Loan result = loanService.add(loanA.convertToLoanDto());
 		assertThat(result).isNotNull().isEqualTo(loanE);
 	}
-	
-	@Disabled
+
 	@Test
 	public void test_CanDeleteLoanById() throws IllegalArgumentException, NotFoundException {
+		when(loanRepository.existsById(any(Integer.class))).thenReturn(true);
 		doNothing().when(loanRepository).deleteById(any(Integer.class));
 		loanService.deleteById(1);
 		verify(loanRepository, atLeast(1)).deleteById(any(Integer.class));
 	}
-	
+
 	@Test
 	public void test_CanFindAllLoanTypes() throws NotFoundException {
 		when(loanTypeRepository.findAll()).thenReturn(loanTypesA);

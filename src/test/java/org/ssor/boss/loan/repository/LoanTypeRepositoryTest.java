@@ -20,6 +20,7 @@ import org.ssor.boss.loan.entity.LoanType;
  */
 @DataJpaTest
 public class LoanTypeRepositoryTest {
+	
 	@Autowired
 	public LoanTypeRepository loanTypeRepository;
 
@@ -35,12 +36,12 @@ public class LoanTypeRepositoryTest {
 
 		assertThat(result).isNotNull().isEmpty();
 	}
+	
 	@Disabled
 	@Test
 	public void test_CanFindById() {
 		loanTypeRepository.save(loanTypeA);
-		LoanType result = loanTypeRepository.findById(1).get();
-
+		LoanType result = loanTypeRepository.getOne(1);
 		assertThat(result).isNotNull().isEqualTo(loanTypeA);
 	}
 }

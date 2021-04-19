@@ -29,7 +29,7 @@ public class LoanService {
 	public Loan add(LoanDto loanDto) throws IllegalArgumentException, NotFoundException {
 
 		Loan loan = loanDto.convertToLoanEntity();
-		
+
 		Optional<LoanType> loanTypeOpt = loanTypeDao.findById(loanDto.getLoanType());
 		if (loanTypeOpt.isEmpty())
 			throw new NotFoundException("Resource not found with id: " + loanDto.getLoanType());
@@ -41,44 +41,29 @@ public class LoanService {
 	}
 
 	public Loan update(LoanDto loanDto) throws IllegalArgumentException, NotFoundException {
-
-		if (loanDto == null) {
-			throw new IllegalArgumentException();
-		}
-
 		if (!loanDao.existsById(loanDto.getId()))
 			throw new NotFoundException("Resource not found with id: " + loanDto.getId());
 
 		Loan loan = loanDao.getOne(loanDto.getId());
 
-		if (loanDto.getAmount() != null) {
-			loan.setAmount(loanDto.getAmount());
-		}
-		if (loanDto.getAmountDue() != null) {
-			loan.setAmountDue(loanDto.getAmountDue());
-		}
-		if (loanDto.getDueBy() != null) {
-			loan.setDueBy(loanDto.getDueBy());
-		}
-		if (loanDto.getInterestRate() != null) {
-			loan.setInterestRate(loanDto.getInterestRate());
-		}
-		if (loanDto.getTakenAt() != null) {
-			loan.setTakenAt(loanDto.getTakenAt());
-		}
-		if (loanDto.getUserId() != null) {
-			loan.setUserId(loanDto.getUserId());
-		}
+		loan.setAmount(loanDto.getAmount());
 
-		if (loanDto.getBranchId() != null) {
-			loan.setBranchId(loanDto.getBranchId());
-		}
-		if (loanDto.getLoanType() != null) {
-			Optional<LoanType> loanTypeOpt = loanTypeDao.findById(loanDto.getLoanType());
-			if (loanTypeOpt.isEmpty())
-				throw new NotFoundException("Resource not found with id: " + loanDto.getLoanType());
-			loan.setLoanType(loanTypeOpt.get());
-		}
+		loan.setAmountDue(loanDto.getAmountDue());
+
+		loan.setDueBy(loanDto.getDueBy());
+
+		loan.setInterestRate(loanDto.getInterestRate());
+
+		loan.setTakenAt(loanDto.getTakenAt());
+
+		loan.setUserId(loanDto.getUserId());
+
+		loan.setBranchId(loanDto.getBranchId());
+
+		Optional<LoanType> loanTypeOpt = loanTypeDao.findById(loanDto.getLoanType());
+		if (loanTypeOpt.isEmpty())
+			throw new NotFoundException("Resource not found with id: " + loanDto.getLoanType());
+		loan.setLoanType(loanTypeOpt.get());
 
 		return loanDao.save(loan);
 	}
@@ -131,10 +116,10 @@ public class LoanService {
 		}
 		loanDao.deleteById(id);
 	}
-	
-	public List<LoanType> findAllLoanTypes() throws NotFoundException{
+
+	public List<LoanType> findAllLoanTypes() throws NotFoundException {
 		List<LoanType> loanTypes = loanTypeDao.findAll();
-		if(loanTypes.isEmpty()) {
+		if (loanTypes.isEmpty()) {
 			throw new NotFoundException("Resource not found");
 		}
 		return loanTypes;
