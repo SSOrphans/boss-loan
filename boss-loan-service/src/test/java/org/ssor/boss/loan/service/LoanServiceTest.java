@@ -2,7 +2,6 @@ package org.ssor.boss.loan.service;
 
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -95,10 +94,9 @@ public class LoanServiceTest {
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
     }
 
-    @Disabled
     @Test
     public void test_CanAddLoan() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.save(loanA)).thenReturn(loanA);
+        when(loanRepository.save(any(Loan.class))).thenReturn(loanA);
         Loan result = loanService.add(loanA.convertToLoanDto());
         assertThat(result).isNotNull().isEqualTo(loanE);
     }
