@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.ssor.boss.core.entity.Loan;
+import org.ssor.boss.core.repository.LoanRepository;
 import org.ssor.boss.loan.service.LoanService;
 
 import java.time.LocalDate;
@@ -17,22 +18,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.ssor.boss.core.entity.LoanType.LOAN_STUDENT;
 
-@WebMvcTest(LoanController.class)
+@WebMvcTest(controllers = LoanController.class)
 public class LoanControllerTest {
-
     @Autowired
     ObjectMapper mapper;
 
     @Autowired
     private MockMvc mvc;
+
     @MockBean
     private LoanService loanService;
+
+    @MockBean
+    private LoanRepository loanDao;
+
     private Loan loanE;
     private List<Loan> loanListE;
     private Loan loanA;
@@ -71,6 +79,7 @@ public class LoanControllerTest {
     @Test
     public void test_CanGetLoanId() throws Exception {
         when(loanService.findById(Mockito.anyInt())).thenReturn(loanA);
+        doNothing().when(loanDao).findById(anyInt());
 
         mvc.perform(get("/api/loans/1")).andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(loanE)));
