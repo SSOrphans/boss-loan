@@ -14,12 +14,10 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 /* @author Derrian Harris
  *
  */
-
+@CrossOrigin
 @RestController
 public class LoanController {
     @Autowired
