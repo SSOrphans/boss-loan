@@ -88,7 +88,7 @@ public class LoanControllerTest {
 
     @Test
     public void test_CanGetLoanByUserId() throws Exception {
-        when(loanService.findByUserId(anyInt(), anyInt(), anyInt(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
+        when(loanService.findByUserId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
 
         mvc.perform(get("/api/users/1/loans")).andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(new PageImpl<Loan>(loanListE))));
@@ -96,7 +96,7 @@ public class LoanControllerTest {
 
     @Test
     public void test_CanGetLoanByBranchId() throws Exception {
-        when(loanService.findByBranchId(anyInt(), anyInt(), anyInt(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
+        when(loanService.findByBranchId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
 
         mvc.perform(get("/api/branches/1/loans")).andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(new PageImpl<Loan>(loanListE))));

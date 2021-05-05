@@ -39,13 +39,15 @@ public class LoanController {
     @GetMapping(path = "api/users/{user_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") @Valid String userId,
+                                                   @RequestParam(name = "keyword", defaultValue = "") String keyword,
                                                    @RequestParam(name = "page", defaultValue = "0") Integer page,
                                                    @RequestParam(name = "limit", defaultValue = "10") Integer limit,
-                                                   @RequestParam(name = "sort", defaultValue = "id") String sortBy) {
+                                                   @RequestParam(name = "sort", defaultValue = "id") String sortBy,
+                                                   @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir) {
 
         Page<Loan> loans = Page.empty();
         try {
-            loans = loanService.findByUserId(Integer.parseInt(userId), page, limit, sortBy);
+            loans = loanService.findByUserId(Integer.parseInt(userId), page, limit, sortBy, sortDir, keyword);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<Object>("Invalid request data.", HttpStatus.BAD_REQUEST);
         } catch (NotFoundException e) {
@@ -57,12 +59,14 @@ public class LoanController {
     @GetMapping(path = "api/branches/{branch_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") @Valid String branchId,
+                                                    @RequestParam(name = "keyword", defaultValue = "") String keyword,
                                                     @RequestParam(name = "page", defaultValue = "0") Integer page,
                                                     @RequestParam(name = "limit", defaultValue = "10") Integer limit,
-                                                    @RequestParam(name = "sort", defaultValue = "id") String sortBy) {
+                                                    @RequestParam(name = "sort", defaultValue = "id") String sortBy,
+                                                    @RequestParam(name = "sortDir", defaultValue = "asc") String sortDir) {
         Page<Loan> loans = Page.empty();
         try {
-            loans = loanService.findByBranchId(Integer.parseInt(branchId), page, limit, sortBy);
+            loans = loanService.findByBranchId(Integer.parseInt(branchId), page, limit, sortBy, sortDir, keyword);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<Object>("Invalid request data.", HttpStatus.BAD_REQUEST);
         } catch (NotFoundException e) {

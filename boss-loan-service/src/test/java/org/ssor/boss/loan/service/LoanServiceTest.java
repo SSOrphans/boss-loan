@@ -81,23 +81,23 @@ public class LoanServiceTest {
 
     @Test
     public void test_CanFindByBranchId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByBranchId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id");
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByBranchIdAndLoanNumberContains(anyInt(), anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id", "asc", "");
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByUserId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id");
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByUserIdAndLoanNumberContains(anyInt(), anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id", "asc", "");
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindAllLoans() throws NotFoundException {
-        when(loanRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findAllLoans(0, 10, "id");
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByLoanNumberContains(anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findAllLoans(0, 10, "id", "asc", "");
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
