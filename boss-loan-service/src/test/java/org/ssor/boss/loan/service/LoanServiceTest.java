@@ -81,22 +81,22 @@ public class LoanServiceTest {
 
     @Test
     public void test_CanFindByBranchId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByBranchId(anyInt(), any(Pageable.class))).thenReturn(loanListA);
-        List<Loan> result = loanService.findByBranchId(1, 0, 10, "id");
+        when(loanRepository.findByBranchId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id");
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
     }
 
     @Test
     public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByUserId(anyInt(), any(Pageable.class))).thenReturn(loanListA);
-        List<Loan> result = loanService.findByUserId(1, 0, 10, "id");
+        when(loanRepository.findByUserId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id");
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
     }
 
     @Test
     public void test_CanFindAllLoans() throws NotFoundException {
         when(loanRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        List<Loan> result = loanService.findAllLoans(0, 10, "id");
+        Page<Loan> result = loanService.findAllLoans(0, 10, "id");
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
     }
 

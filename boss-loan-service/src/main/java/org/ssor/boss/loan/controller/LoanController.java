@@ -2,6 +2,7 @@ package org.ssor.boss.loan.controller;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,6 @@ import org.ssor.boss.core.transfer.LoanDto;
 import org.ssor.boss.loan.service.LoanService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /* @author Derrian Harris
  *
@@ -40,11 +39,11 @@ public class LoanController {
     @GetMapping(path = "api/users/{user_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") @Valid String userId,
-                                                   @RequestParam(defaultValue = "0") Integer page,
-                                                   @RequestParam(defaultValue = "10") Integer limit,
-                                                   @RequestParam(defaultValue = "id") String sortBy) {
+                                                   @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                   @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+                                                   @RequestParam(name = "sort", defaultValue = "id") String sortBy) {
 
-        List<Loan> loans = new ArrayList<Loan>();
+        Page<Loan> loans = Page.empty();
         try {
             loans = loanService.findByUserId(Integer.parseInt(userId), page, limit, sortBy);
         } catch (IllegalArgumentException e) {
@@ -58,10 +57,10 @@ public class LoanController {
     @GetMapping(path = "api/branches/{branch_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") @Valid String branchId,
-                                                    @RequestParam(defaultValue = "0") Integer page,
-                                                    @RequestParam(defaultValue = "10") Integer limit,
-                                                    @RequestParam(defaultValue = "id") String sortBy) {
-        List<Loan> loans = new ArrayList<Loan>();
+                                                    @RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                    @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+                                                    @RequestParam(name = "sort", defaultValue = "id") String sortBy) {
+        Page<Loan> loans = Page.empty();
         try {
             loans = loanService.findByBranchId(Integer.parseInt(branchId), page, limit, sortBy);
         } catch (IllegalArgumentException e) {

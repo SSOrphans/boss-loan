@@ -2,6 +2,7 @@ package org.ssor.boss.loan.service;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,7 +12,6 @@ import org.ssor.boss.core.repository.LoanRepository;
 import org.ssor.boss.core.transfer.LoanDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 /*
@@ -68,12 +68,12 @@ public class LoanService {
         return result.get();
     }
 
-    public List<Loan> findByBranchId(Integer branchId, Integer page, Integer limit, String sortBy) throws IllegalArgumentException, NotFoundException {
+    public Page<Loan> findByBranchId(Integer branchId, Integer page, Integer limit, String sortBy) throws IllegalArgumentException, NotFoundException {
         if (branchId == null) {
             throw new IllegalArgumentException("Invalid Request");
         }
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy));
-        List<Loan> loans = loanDao.findByBranchId(branchId, pageable);
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy.split(",")));
+        Page<Loan> loans = loanDao.findByBranchId(branchId, pageable);
 
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found with branch id: " + branchId);
@@ -81,22 +81,21 @@ public class LoanService {
         return loans;
     }
 
-    public List<Loan> findByUserId(Integer userId, Integer page, Integer limit, String sortBy) throws IllegalArgumentException, NotFoundException {
-
+    public Page<Loan> findByUserId(Integer userId, Integer page, Integer limit, String sortBy) throws IllegalArgumentException, NotFoundException {
         if (userId == null) {
             throw new IllegalArgumentException("Invalid Request");
         }
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy));
-        List<Loan> loans = loanDao.findByUserId(userId, pageable);
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy.split(",")));
+        Page<Loan> loans = loanDao.findByUserId(userId, pageable);
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found with User id: " + userId);
         }
         return loans;
     }
 
-    public List<Loan> findAllLoans(Integer page, Integer limit, String sortBy) throws NotFoundException {
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy));
-        List<Loan> loans = loanDao.findAll(pageable).getContent();
+    public Page<Loan> findAllLoans(Integer page, Integer limit, String sortBy) throws NotFoundException {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(sortBy.split(",")));
+        Page<Loan> loans = loanDao.findAll(pageable);
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found");
         }
@@ -104,7 +103,6 @@ public class LoanService {
     }
 
     public void deleteById(Integer id) throws IllegalArgumentException, NotFoundException {
-
         if (!loanDao.existsById(id)) {
             throw new NotFoundException("Resource not found with id: " + id);
         }
