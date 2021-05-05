@@ -39,11 +39,14 @@ public class LoanController {
 
     @GetMapping(path = "api/users/{user_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") @Valid String userId) {
+    public ResponseEntity<Object> getLoansByUserId(@PathVariable("user_id") @Valid String userId,
+                                                   @RequestParam(defaultValue = "0") Integer page,
+                                                   @RequestParam(defaultValue = "10") Integer limit,
+                                                   @RequestParam(defaultValue = "id") String sortBy) {
 
         List<Loan> loans = new ArrayList<Loan>();
         try {
-            loans = loanService.findByUserId(Integer.parseInt(userId));
+            loans = loanService.findByUserId(Integer.parseInt(userId), page, limit, sortBy);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<Object>("Invalid request data.", HttpStatus.BAD_REQUEST);
         } catch (NotFoundException e) {
@@ -54,10 +57,13 @@ public class LoanController {
 
     @GetMapping(path = "api/branches/{branch_id}/loans", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") @Valid String branchId) {
+    public ResponseEntity<Object> getLoanByBranchId(@PathVariable("branch_id") @Valid String branchId,
+                                                    @RequestParam(defaultValue = "0") Integer page,
+                                                    @RequestParam(defaultValue = "10") Integer limit,
+                                                    @RequestParam(defaultValue = "id") String sortBy) {
         List<Loan> loans = new ArrayList<Loan>();
         try {
-            loans = loanService.findByBranchId(Integer.parseInt(branchId));
+            loans = loanService.findByBranchId(Integer.parseInt(branchId), page, limit, sortBy);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<Object>("Invalid request data.", HttpStatus.BAD_REQUEST);
         } catch (NotFoundException e) {

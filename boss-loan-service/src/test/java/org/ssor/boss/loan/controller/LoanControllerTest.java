@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,7 +87,7 @@ public class LoanControllerTest {
 
     @Test
     public void test_CanGetLoanByUserId() throws Exception {
-        when(loanService.findByUserId(1)).thenReturn(loanListA);
+        when(loanService.findByUserId(anyInt(), anyInt(), anyInt(), anyString())).thenReturn(loanListA);
 
         mvc.perform(get("/api/users/1/loans")).andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(loanListE)));
@@ -95,7 +95,7 @@ public class LoanControllerTest {
 
     @Test
     public void test_CanGetLoanByBranchId() throws Exception {
-        when(loanService.findByBranchId(1)).thenReturn(loanListA);
+        when(loanService.findByBranchId(anyInt(), anyInt(), anyInt(), anyString())).thenReturn(loanListA);
 
         mvc.perform(get("/api/branches/1/loans")).andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(loanListE)));
