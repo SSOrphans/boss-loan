@@ -8,11 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.ssor.boss.core.entity.Loan;
+import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
 import org.ssor.boss.core.transfer.LoanDto;
+import org.ssor.boss.loan.entity.LoanTypeEntity;
+import org.ssor.boss.loan.repository.LoanTypeRepository;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +30,9 @@ public class LoanService {
 
     @Autowired
     private LoanRepository loanDao;
+
+    @Autowired
+    private LoanTypeRepository loanTypeDao;
 
     public Loan add(LoanDto loanDto) throws IllegalArgumentException, NotFoundException {
 
@@ -74,12 +81,12 @@ public class LoanService {
         return result.get();
     }
 
-    public Page<Loan> findByBranchId(Integer branchId, Integer page, Integer limit, String sortBy, String sortDir, String keyword) throws IllegalArgumentException, NotFoundException {
+    public Page<Loan> findByBranchId(Integer branchId, Integer page, Integer limit, String sortBy, String sortDir, String keyword, LoanTypeEnum filter) throws IllegalArgumentException, NotFoundException {
         if (branchId == null) {
             throw new IllegalArgumentException("Invalid Request");
         }
         Pageable pageable = PageRequest.of(page, limit, Sort.by(getSortDirection(sortDir), sortBy.split(",")));
-        Page<Loan> loans = loanDao.findAllByBranchIdAndLoanNumberStartsWith(branchId, keyword, pageable);
+        Page<Loan> loans = loanDao.findAllByBranchIdAndLoanNumberStartsWithAndLoanTypeIs(branchId, keyword, filter, pageable);
 
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found with branch id: " + branchId);
@@ -87,13 +94,13 @@ public class LoanService {
         return loans;
     }
 
-    public Page<Loan> findByUserId(Integer userId, Integer page, Integer limit, String sortBy, String sortDir, String keyword) throws IllegalArgumentException, NotFoundException {
+    public Page<Loan> findByUserId(Integer userId, Integer page, Integer limit, String sortBy, String sortDir, String keyword, LoanTypeEnum filter) throws IllegalArgumentException, NotFoundException {
         if (userId == null) {
             throw new IllegalArgumentException("Invalid Request");
         }
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by(getSortDirection(sortDir), sortBy.split(",")));
-        Page<Loan> loans = loanDao.findAllByUserIdAndLoanNumberStartsWith(userId, keyword, pageable);
+        Page<Loan> loans = loanDao.findAllByUserIdAndLoanNumberStartsWithAndLoanTypeIs(userId, keyword, filter, pageable);
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found with User id: " + userId);
         }
@@ -114,14 +121,23 @@ public class LoanService {
         return direction;
     }
 
-    public Page<Loan> findAllLoans(Integer page, Integer limit, String sortBy, String sortDir, String keyword) throws NotFoundException {
+    public Page<Loan> findAllLoans(Integer page, Integer limit, String sortBy, String sortDir, String keyword, LoanTypeEnum filter) throws NotFoundException {
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by(getSortDirection(sortDir), sortBy.split(",")));
-        Page<Loan> loans = loanDao.findAllByLoanNumberStartsWith(keyword, pageable);
+        Page<Loan> loans = loanDao.findAllByLoanNumberStartsWithAndLoanTypeIs(keyword, filter, pageable);
         if (loans.isEmpty()) {
             throw new NotFoundException("Resource not found");
         }
         return loans;
+    }
+
+    public List<LoanTypeEntity> findAllLoansTypes() throws NotFoundException {
+
+        List<LoanTypeEntity> loanTypes = loanTypeDao.findAll();
+        if (loanTypes.isEmpty()) {
+            throw new NotFoundException("Resource not found");
+        }
+        return loanTypes;
     }
 
     public void deleteById(Integer id) throws IllegalArgumentException, NotFoundException {

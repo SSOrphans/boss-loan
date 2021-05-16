@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.ssor.boss.core.entity.Loan;
+import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
 import org.ssor.boss.loan.service.LoanService;
 
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.ssor.boss.core.entity.LoanType.LOAN_STUDENT;
+import static org.ssor.boss.core.entity.LoanTypeEnum.LOAN_STUDENT;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,6 +55,7 @@ public class LoanControllerTest {
         loanE = new Loan();
         loanE.setId(1);
         loanE.setUserId(1);
+        loanE.setLoanNumber("1234567890");
         loanE.setBranchId(1);
         loanE.setAmount(1f);
         loanE.setAmountDue(1f);
@@ -64,6 +67,7 @@ public class LoanControllerTest {
         loanA = new Loan();
         loanA.setId(1);
         loanA.setUserId(1);
+        loanA.setLoanNumber("1234567890");
         loanA.setBranchId(1);
         loanA.setAmount(1f);
         loanA.setAmountDue(1f);
@@ -88,18 +92,18 @@ public class LoanControllerTest {
 
     @Test
     public void test_CanGetLoanByUserId() throws Exception {
-        when(loanService.findByUserId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
-
+        when(loanService.findByUserId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString(), any(LoanTypeEnum.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page expected = new PageImpl<Loan>(loanListE);
         mvc.perform(get("/api/users/1/loans")).andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(new PageImpl<Loan>(loanListE))));
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
     }
 
     @Test
     public void test_CanGetLoanByBranchId() throws Exception {
-        when(loanService.findByBranchId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new PageImpl<Loan>(loanListA));
-
+        when(loanService.findByBranchId(anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyString(), any(LoanTypeEnum.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page expected = new PageImpl<Loan>(loanListE);
         mvc.perform(get("/api/branches/1/loans")).andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(new PageImpl<Loan>(loanListE))));
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
     }
 
     @Test

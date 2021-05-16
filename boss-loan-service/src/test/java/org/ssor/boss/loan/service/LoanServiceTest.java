@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.ssor.boss.core.entity.Loan;
+import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
 
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.ssor.boss.core.entity.LoanType.LOAN_STUDENT;
+import static org.ssor.boss.core.entity.LoanTypeEnum.LOAN_STUDENT;
 
 @ExtendWith(MockitoExtension.class)
 public class LoanServiceTest {
@@ -81,22 +82,22 @@ public class LoanServiceTest {
 
     @Test
     public void test_CanFindByBranchId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findAllByBranchIdAndLoanNumberStartsWith(anyInt(), anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id", "asc", "");
+        when(loanRepository.findAllByBranchIdAndLoanNumberStartsWithAndLoanTypeIs(anyInt(), anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id", "asc", "", LOAN_STUDENT);
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findAllByUserIdAndLoanNumberStartsWith(anyInt(), anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id", "asc", "");
+        when(loanRepository.findAllByUserIdAndLoanNumberStartsWithAndLoanTypeIs(anyInt(), anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id", "asc", "", LOAN_STUDENT);
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindAllLoans() throws NotFoundException {
-        when(loanRepository.findAllByLoanNumberStartsWith(anyString(), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
-        Page<Loan> result = loanService.findAllLoans(0, 10, "id", "asc", "");
+        when(loanRepository.findAllByLoanNumberStartsWithAndLoanTypeIs(anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findAllLoans(0, 10, "id", "asc", "", LOAN_STUDENT);
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
