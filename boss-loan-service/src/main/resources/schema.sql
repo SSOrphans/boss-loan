@@ -13,3 +13,10 @@ CREATE TABLE IF NOT EXISTS boss.loan
     amount_due    FLOAT       NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS boss.loan_type
+(
+    id   TINYINT     NOT NULL AUTO_INCREMENT UNIQUE,
+    name VARCHAR(32) NOT NULL,
+    PRIMARY KEY (id)
+);
