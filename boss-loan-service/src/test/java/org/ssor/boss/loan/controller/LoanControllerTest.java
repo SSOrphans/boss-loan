@@ -15,11 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.ssor.boss.core.entity.Loan;
 import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
+import org.ssor.boss.loan.entity.LoanTypeEntity;
 import org.ssor.boss.loan.service.LoanService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -87,7 +89,15 @@ public class LoanControllerTest {
         when(loanService.findById(Mockito.anyInt())).thenReturn(loanA);
 
         mvc.perform(get("/api/loans/1")).andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(loanE)));
+                .andExpect(content().string(mapper.writeValueAsString(loanE)));
+    }
+
+    @Test
+    public void test_CanGetAllLoans() throws Exception {
+        when(loanService.findAllLoans(anyInt(), anyInt(), anyString(), anyString(), anyString(), any(LoanTypeEnum.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page expected = new PageImpl<Loan>(loanListE);
+        mvc.perform(get("/api/loans")).andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
     }
 
     @Test
@@ -112,7 +122,7 @@ public class LoanControllerTest {
 
         mvc.perform(post("/api/loans").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isCreated())
-                .andExpect(content().json(mapper.writeValueAsString(loanE)));
+                .andExpect(content().string(mapper.writeValueAsString(loanE)));
     }
 
     @Test
@@ -121,7 +131,7 @@ public class LoanControllerTest {
 
         mvc.perform(put("/api/loans/1").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(loanA.convertToLoanDto()))).andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(loanE)));
+                .andExpect(content().string(mapper.writeValueAsString(loanE)));
     }
 
     @Test
@@ -130,6 +140,18 @@ public class LoanControllerTest {
 
         mvc.perform(delete("/api/loans/1").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(loanA))).andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_CanGetAllLoanTypes() throws Exception {
+        LoanTypeEntity expected = new LoanTypeEntity(1, "LOAN_STUDENT");
+        LoanTypeEntity actual = new LoanTypeEntity(1, "LOAN_STUDENT");
+        List<LoanTypeEntity> expectedList = Arrays.asList(expected);
+        List<LoanTypeEntity> actualList = Arrays.asList(actual);
+
+        when(loanService.findAllLoansTypes()).thenReturn(actualList);
+        mvc.perform(get("/api/loans/types")).andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(expectedList)));
     }
 
 }
