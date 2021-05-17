@@ -97,7 +97,7 @@ public class LoanController {
         } catch (NotFoundException e) {
             return new ResponseEntity<Object>("Loans not found.", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Object>(loans, HttpStatus.CREATED);
+        return new ResponseEntity<Object>(loans, HttpStatus.OK);
     }
 
     @GetMapping(path = "api/loans/types", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
@@ -109,7 +109,7 @@ public class LoanController {
         } catch (NotFoundException e) {
             return new ResponseEntity<Object>("Loans Types not found.", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Object>(loanTypes, HttpStatus.CREATED);
+        return new ResponseEntity<Object>(loanTypes, HttpStatus.OK);
     }
 
     @PostMapping(path = "api/loans", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,

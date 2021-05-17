@@ -13,10 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.ssor.boss.core.entity.Loan;
 import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
+import org.ssor.boss.loan.entity.LoanTypeEntity;
+import org.ssor.boss.loan.repository.LoanTypeRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +32,9 @@ public class LoanServiceTest {
 
     @Mock
     LoanRepository loanRepository;
+
+    @Mock
+    LoanTypeRepository loanTypeRepository;
 
     @Mock
     Page<Loan> page;
@@ -99,6 +105,15 @@ public class LoanServiceTest {
         when(loanRepository.findAllByLoanNumberStartsWithAndLoanTypeIs(anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
         Page<Loan> result = loanService.findAllLoans(0, 10, "id", "asc", "", LOAN_STUDENT);
         assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
+    }
+
+    @Test
+    public void test_CanFindAllLoanTypes() throws NotFoundException {
+        LoanTypeEntity expected = new LoanTypeEntity(1, "LOAN_STUDENT");
+        LoanTypeEntity actual = new LoanTypeEntity(1, "LOAN_STUDENT");
+        when(loanTypeRepository.findAll()).thenReturn(Arrays.asList(actual));
+        List<LoanTypeEntity> result = loanService.findAllLoansTypes();
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(Arrays.asList(expected));
     }
 
     @Test
