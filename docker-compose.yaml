@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+    boss-loan-microservice:
+        build: ./
+        image: boss-loan-microservice
+        ports:
+            - 80:8080
