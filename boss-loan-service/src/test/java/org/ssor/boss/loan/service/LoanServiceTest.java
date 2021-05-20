@@ -7,24 +7,37 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.ssor.boss.core.entity.Loan;
+import org.ssor.boss.core.entity.LoanTypeEnum;
 import org.ssor.boss.core.repository.LoanRepository;
+import org.ssor.boss.loan.entity.LoanTypeEntity;
+import org.ssor.boss.loan.repository.LoanTypeRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.ssor.boss.core.entity.LoanType.LOAN_STUDENT;
+import static org.ssor.boss.core.entity.LoanTypeEnum.LOAN_STUDENT;
 
 @ExtendWith(MockitoExtension.class)
 public class LoanServiceTest {
 
     @Mock
     LoanRepository loanRepository;
+
+    @Mock
+    LoanTypeRepository loanTypeRepository;
+
+    @Mock
+    Page<Loan> page;
 
     LocalDateTime currTime;
     @InjectMocks
@@ -75,23 +88,32 @@ public class LoanServiceTest {
 
     @Test
     public void test_CanFindByBranchId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByBranchId(1)).thenReturn(loanListA);
-        List<Loan> result = loanService.findByBranchId(1);
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByBranchIdAndLoanNumberStartsWithAndLoanTypeIs(anyInt(), anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByBranchId(1, 0, 10, "id", "asc", "", LOAN_STUDENT);
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindByUserId() throws IllegalArgumentException, NotFoundException {
-        when(loanRepository.findByUserId(1)).thenReturn(loanListA);
-        List<Loan> result = loanService.findByUserId(1);
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByUserIdAndLoanNumberStartsWithAndLoanTypeIs(anyInt(), anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findByUserId(1, 0, 10, "id", "asc", "", LOAN_STUDENT);
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
     }
 
     @Test
     public void test_CanFindAllLoans() throws NotFoundException {
-        when(loanRepository.findAll()).thenReturn(loanListA);
-        List<Loan> result = loanService.findAllLoans();
-        assertThat(result).isNotNull().isNotEmpty().isEqualTo(loanListE);
+        when(loanRepository.findAllByLoanNumberStartsWithAndLoanTypeIs(anyString(), any(LoanTypeEnum.class), any(Pageable.class))).thenReturn(new PageImpl<Loan>(loanListA));
+        Page<Loan> result = loanService.findAllLoans(0, 10, "id", "asc", "", LOAN_STUDENT);
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(new PageImpl<Loan>(loanListE));
+    }
+
+    @Test
+    public void test_CanFindAllLoanTypes() throws NotFoundException {
+        LoanTypeEntity expected = new LoanTypeEntity(1, "LOAN_STUDENT");
+        LoanTypeEntity actual = new LoanTypeEntity(1, "LOAN_STUDENT");
+        when(loanTypeRepository.findAll()).thenReturn(Arrays.asList(actual));
+        List<LoanTypeEntity> result = loanService.findAllLoansTypes();
+        assertThat(result).isNotNull().isNotEmpty().isEqualTo(Arrays.asList(expected));
     }
 
     @Test
