@@ -1,13 +1,19 @@
 node{
     environment {
         SERVICE_NAME = "loanService"
+        SONAR_TOKEN = credentials('SONAR_TOKEN')
         COMMIT_HASH = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
     }
     stage('Checkout'){
         checkout scm
     }
-    stage('Build'){
-        withMaven{
+    stage('Quality Analysis') {
+        withMaven {
+            sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login= $SONAR_TOKEN'
+        }
+    }
+    stage('Build') {
+        withMaven {
             sh 'mvn clean package'
         }
     }
