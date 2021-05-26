@@ -1,32 +1,32 @@
-node{
-    environment {
-        SERVICE_NAME = "loanService"
-        SONAR_TOKEN = credentials('SONAR_TOKEN')
-        COMMIT_HASH = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
-    }
-    stage('Checkout'){
-        checkout scm
-    }
-    stage('Quality Analysis') {
-        withMaven {
-            sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login= $SONAR_TOKEN'
+node {
+    withEnv(['serviceName=boss-loan', 'commitHash=${sh(script: \'git rev-parse --short HEAD\', returnStdout: true).trim()}', 'test=asdasd']) {
+        stage('Checkout') {
+            checkout([$class: 'GitSCM', branches: [[name: 'feature/SSOR-208-JenkinsPipelines']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/SSOrphans/boss-loan-service.git']]])
+            sh 'git submodule update --init'
+
         }
-    }
-    stage('Build') {
-        withMaven {
-            sh 'mvn clean package'
+        stage('Build') {
+            withMaven(jdk: 'openjdk-11') {
+                sh 'mvn clean package'
+            }
         }
-    }
-    stage('Docker Build') {
-                steps {
-                    echo 'Deploying....'
-                    // sh "aws ecr ........."
-                    sh "docker build --tag $SERVICE_NAME:$COMMIT_HASH ."
-                    //sh "docker tag $SERVICE_NAME:$COMMIT_HASH $AWS_ID/ECR Repo/$SERVICE_NAME:$COMMIT_HASH"
-                    //sh "docker push $AWS_ID/ECR Repo/$SERVICE_NAME:$COMMIT_HASH"
+        stage('Quality Analysis') {
+            withCredentials([string(credentialsId: 'sonar-token', variable: 'sonartoken')]) {
+                withMaven(jdk: 'openjdk-11') {
+                    sh 'mvn clean install'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$sonartoken'
                 }
             }
-    stage('Deploy'){
-        echo 'Deploying...'
+        }
+        stage('Docker Build') {
+            withCredentials([string(credentialsId: 'aws-repo', variable: 'awsRepo')]) {
+                echo "Building and deploying $serviceName"
+
+                docker.build('$serviceName')
+                docker.withRegistry("$awsRepo", 'ecr:us-east-2:aws-credentials') {
+                    docker.image('$serviceName').push('$commitHash')
+                }
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@
         <version>2.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <modules>
         <module>boss-core</module>
         <module>boss-loan-service</module>
