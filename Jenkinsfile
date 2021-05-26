@@ -1,7 +1,7 @@
 node {
     withEnv(['serviceName=boss-loan', 'commitHash=${sh(script: \'git rev-parse --short HEAD\', returnStdout: true).trim()}', 'test=asdasd']) {
         stage('Checkout') {
-            checkout([$class: 'GitSCM', branches: [[name: 'feature/SSOR-208-JenkinsPipelines']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/SSOrphans/boss-loan-service.git']]])
+            checkout scm
             sh 'git submodule update --init'
 
         }
