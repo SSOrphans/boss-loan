@@ -69,7 +69,7 @@ Resources:
       Memory: '2GB'
       Cpu: '1 vcpu'
       NetworkMode: awsvpc
-      ExecutionRoleArn: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:ecs-task-execution-role}}'
+      #      ExecutionRoleArn: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:ecs-task-execution-role}}'
       TaskRoleArn: !Ref ContainerExecutionRole
       ContainerDefinitions:
         - Name: !Ref ApplicationName
