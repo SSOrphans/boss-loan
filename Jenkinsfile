@@ -1,10 +1,12 @@
 node {
-    withEnv(['serviceName=boss-loan',"commitHash=${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"]) {
+    withEnv(['serviceName=boss-loan', "commitHash=${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"]) {
         stage('Checkout') {
             echo "Checking out $serviceName"
             checkout scm
             sh 'git submodule update --init'
-            
+            sh 'cd boss-core'
+            sh 'git checkout dev'
+            sh 'cd ..'
         }
         stage('Build') {
             withMaven(jdk: 'openjdk-11') {
@@ -27,6 +29,26 @@ node {
                 docker.build('$serviceName:$commitHash')
                 docker.withRegistry("https://$awsRepo", 'ecr:us-east-2:aws-credentials') {
                     docker.image('$serviceName:$commitHash').push("$commitHash")
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                withCredentials([string(credentialsId: 'aws-account-id', variable: 'awsAccountId'), string(credentialsId: 'aws-repo', variable: 'awsRepo')]) {
+                    //echo 'Fetching cloud cloudformation template..'
+                    //sh "touch ECS.yml"
+                    //sh "rm ECS.yml"
+                    //sh "wget https://raw.githubusercontent.com/Java-Feb-CRAM/cloud-formation/main/ECS.yml"
+                    echo 'Deploying cloudformation..'
+                    sh "aws cloudformation deploy --stack-name boss-stack --template-file ./ecs.yaml --parameter-overrides ApplicationName=$serviceName ApplicationEnvironment=dev ECRRepositoryUri=$awsRepo/$serviceName:$commitHash ExecutionRoleArn=arn:aws:iam::$awsAccountId:role/ecsTaskExecutionRole TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:$awsAccountId:targetgroup/default/a1d737973d78e824 --role-arn arn:aws:iam::$awsAccountId:role/awsCloudFormationRole --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-east-2"
+                }
+            }
+        }
+        stage('Cleanup') {
+            post {
+                always {
+                    sh 'mvn clean'
+                    sh "docker system prune -f"
                 }
             }
         }
