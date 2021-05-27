@@ -76,11 +76,11 @@ Resources:
           Image: !Ref ECRRepositoryUri # This gets passed as param from ecs.json generated in buildspec
           PortMappings:
             - ContainerPort: 8080
-          Secrets:
-            - Name: DB_USERNAME
-              ValueFrom: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:rds-user-secret-arn}}'
-            - Name: DB_PASSWORD
-              ValueFrom: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:rds-password-secret-arn}}'
+          #          Secrets:
+          #            - Name: DB_USERNAME
+          #              ValueFrom: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:rds-user-secret-arn}}'
+          #            - Name: DB_PASSWORD
+          #              ValueFrom: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:rds-password-secret-arn}}'
           Environment:
             - Name: APPLICATION_NAME
               Value: !Sub ${ApplicationName}
