@@ -129,7 +129,7 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - /api/*
+            - /api/loans
             - /api*
       Actions:
         - Type: forward
