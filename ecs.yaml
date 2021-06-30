@@ -109,7 +109,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 60
-      HealthCheckPath: '/'
+      HealthCheckPath: '/api/loans'
       HealthCheckTimeoutSeconds: 5
       HealthCheckPort: '8080'
       UnhealthyThresholdCount: 2
@@ -129,10 +129,12 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - /api/*
-            - /api*
+            - /api/loans/*
+            - /api/loans*
+            - /api/users/*/loans
+            - /api/branches/*/loans
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       ListenerArn: !Sub '{{resolve:secretsmanager:SOrphans/${ApplicationEnvironment}:SecretString:listener-arn}}'
-      Priority: 10
+      Priority: 11
